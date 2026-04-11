@@ -11,3 +11,14 @@ dependencies = [
     "pytest>=9.0.3",
     "uvicorn[standard]>=0.44.0",
 ]
+
+[dependency-groups]
+dev = [
+    "commitizen>=4.13.10",
+    "pre-commit>=4.5.1",
+]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.1.0"
+tag_format = "v$version"
