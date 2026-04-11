@@ -7,6 +7,11 @@ from src.api.schemas.analytics import AnalyticsSummary
 router = APIRouter(prefix="/analytics", tags=["analytics"])
 
 
-@router.get("/summary")
+@router.get(
+    "/summary",
+    response_model=AnalyticsSummary,
+    summary="Dog analytics summary",
+    description="Get aggregated analytics about dogs (e.g. count, averages).",
+)
 def analytics_summary_route() -> AnalyticsSummary:
     return analytics_summary()

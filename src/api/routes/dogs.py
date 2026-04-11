@@ -7,7 +7,12 @@ from src.services.dog_service import create_dog
 router = APIRouter(prefix="/dogs", tags=["dogs"])
 
 
-@router.get("")
+@router.get(
+    "",
+    response_model=DogsResponse,
+    summary="List dogs",
+    description="Retrieve a list of all dogs in the system.",
+)
 def list_dogs_route() -> DogsResponse:
     return DogsResponse(
         dogs=[
@@ -17,6 +22,12 @@ def list_dogs_route() -> DogsResponse:
     )
 
 
-@router.post("", status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    status_code=status.HTTP_201_CREATED,
+    response_model=Dog,
+    summary="Create a dog",
+    description="Create a new dog entry in the system.",
+)
 def create_dog_route(payload: DogCreateRequest) -> Dog:
     return create_dog(payload)

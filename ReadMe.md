@@ -24,6 +24,10 @@ Run all tests
 docker compose run --rm test
 ```
 
+# Swagger
+
+Swagger is configured to run in `http://localhost:8000/docs`
+
 # Useful commands
 
 Install pre-commit on initial run 
