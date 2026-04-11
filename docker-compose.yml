@@ -17,6 +17,18 @@ services:
         uv run python -m scripts.validate_env &&
         uv run uvicorn src.api.main:api --host 0.0.0.0 --port 8000
 
+  lint:
+    build: .
+    container_name: dogtracker-lint
+    volumes:
+      - .:/app
+      - /app/.venv
+    command: 
+      - sh
+      - -c
+      - |
+        uv run ruff check .
+
   test:
     build: .
     container_name: dogtracker-backend-test
