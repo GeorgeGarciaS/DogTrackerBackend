@@ -22,3 +22,8 @@ dev = [
 name = "cz_conventional_commits"
 version = "0.1.0"
 tag_format = "v$version"
+
+markers = [
+    "unit: fast, isolated unit tests",
+    "integration: slower tests that touch external systems (unit test that accidentally grew up)",
+]
