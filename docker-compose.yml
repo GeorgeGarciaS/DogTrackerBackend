@@ -7,6 +7,7 @@ services:
       - .env
     volumes:
       - .:/app
+      - /app/.venv
     ports:
       - "8000:8000"
     command:
@@ -24,6 +25,7 @@ services:
       - .env
     volumes:
       - .:/app
+      - /app/.venv
     command:
       - sh
       - -c
