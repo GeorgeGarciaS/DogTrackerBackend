@@ -1,8 +1,7 @@
 from fastapi import APIRouter
 
-from src.services.analytics_service import get_analytics_summary
 from src.api.schemas.analytics import AnalyticsSummary
-
+from src.services.analytics_service import get_analytics_summary
 
 router = APIRouter(prefix="/analytics", tags=["analytics"])
 
