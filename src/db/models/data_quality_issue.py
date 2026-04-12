@@ -1,11 +1,12 @@
 from datetime import datetime, timezone
 from uuid import uuid4
-from sqlalchemy import String, DateTime, ForeignKey, Text
+
+from sqlalchemy import DateTime, ForeignKey, String, Text
 from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column
 
-from enums.issue_type import IssueType
 from src.db.session import Base
+from src.enums import TelemetryIssueType
 
 
 class DataQualityIssueModel(Base):
@@ -31,8 +32,8 @@ class DataQualityIssueModel(Base):
         comment="Foreign key referencing dogs.dog_id"
     )
 
-    issue_type: Mapped[IssueType] = mapped_column(
-        SQLEnum(IssueType),
+    issue_type: Mapped[TelemetryIssueType] = mapped_column(
+        SQLEnum(TelemetryIssueType),
         nullable=False,
         comment="Machine-readable issue type (e.g. 'latitude_out_of_range')"
     )

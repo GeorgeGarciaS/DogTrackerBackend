@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from uuid import uuid4
-from sqlalchemy import String, Float, Boolean, DateTime
+
+from sqlalchemy import Boolean, DateTime, Float, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.db.session import Base
@@ -30,13 +31,13 @@ class DogModel(Base):
         comment="Unique device identifier associated with the dog, one per dog"
     )
 
-    start_lat: Mapped[float] = mapped_column(
+    start_latitude: Mapped[float] = mapped_column(
         Float,
         nullable=False,
         comment="Initial latitude where the dog/device was registered"
     )
 
-    start_lon: Mapped[float] = mapped_column(
+    start_longitude: Mapped[float] = mapped_column(
         Float,
         nullable=False,
         comment="Initial longitude where the dog/device was registered"

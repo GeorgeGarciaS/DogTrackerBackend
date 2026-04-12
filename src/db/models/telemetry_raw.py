@@ -1,9 +1,10 @@
 from uuid import uuid4
+
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
 
+from src.db.models.telemetry_mixin import TelemetryModelFieldsMixin
 from src.db.session import Base
-from db.models.telemetry_mixin import TelemetryModelFieldsMixin
 
 
 class TelemetryRawModel(TelemetryModelFieldsMixin, Base):

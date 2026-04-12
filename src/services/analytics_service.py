@@ -1,5 +1,7 @@
 import random
+
 from src.api.schemas.analytics import AnalyticsSummary
+
 
 def get_analytics_summary() -> AnalyticsSummary:
     return AnalyticsSummary(

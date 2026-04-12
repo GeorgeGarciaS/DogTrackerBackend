@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
-from sqlalchemy import String, Float, Integer, DateTime, ForeignKey
+
+from sqlalchemy import DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.db.session import Base
@@ -39,7 +40,7 @@ class DogCurrentStatusModel(Base):
         comment="Latest valid longitude"
     )
 
-    steps: Mapped[int] = mapped_column(
+    cumulative_steps: Mapped[int] = mapped_column(
         Integer,
         nullable=False,
         comment="Latest valid cumulative step count"
