@@ -1,6 +1,7 @@
 # scripts/validate_env.py
-from src.core.settings import Settings
 import sys
+
+from src.core.settings import Settings
 
 try:
     Settings()   # type: ignore

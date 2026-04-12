@@ -1,10 +1,24 @@
 services:
+  db:
+    image: postgres:16
+    container_name: dogtracker-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dogtracker
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   app:
     build: .
     container_name: dogtracker-backend
     working_dir: /app
     env_file:
       - .env
+    environment:
+      - PYTHONPATH=/app
     volumes:
       - .:/app
       - /app/.venv
@@ -15,11 +29,15 @@ services:
       - -c
       - |
         uv run python -m scripts.validate_env &&
-        uv run uvicorn src.api.main:api --host 0.0.0.0 --port 8000
+        uv run uvicorn src.api.main:api --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - db
 
   lint:
     build: .
     container_name: dogtracker-lint
+    environment:
+      - PYTHONPATH=/app
     volumes:
       - .:/app
       - /app/.venv
@@ -35,6 +53,8 @@ services:
     working_dir: /app
     env_file:
       - .env
+    environment:
+      - PYTHONPATH=/app
     volumes:
       - .:/app
       - /app/.venv
@@ -43,5 +63,7 @@ services:
       - -c
       - |
         uv run python -m scripts.validate_env &&
-        uv run pytest &&
-        uv run dbt test
+        uv run pytest -s -vv
+
+volumes:
+  postgres_data:

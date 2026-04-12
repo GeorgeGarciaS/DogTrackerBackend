@@ -1,7 +1,10 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 
-from src.services.dog_service import get_dog, list_dogs, create_dog
-from src.api.schemas.dog import DogCreateRequest, DogRequest, DogInternalResponse
+from src.api.exceptions import DomainError
+from src.api.schemas.dog import DogCreateRequest, DogInternalResponse, DogRequest
+from src.db.session import get_db
+from src.services.dog_service import create_dog, get_dog, list_dogs
 
 router = APIRouter(prefix="/internal/dogs", tags=["dogs"])
 
@@ -12,9 +15,12 @@ router = APIRouter(prefix="/internal/dogs", tags=["dogs"])
     summary="List dogs",
     description="Retrieve a list of all dogs in the system.",
 )
-def list_dogs_route() -> list[DogInternalResponse]:
-    dogs = list_dogs()
-    return [DogInternalResponse.model_validate(dog) for dog in dogs]
+def list_dogs_route(db: Session = Depends(get_db)) -> list[DogInternalResponse]:
+    try:
+        dogs = list_dogs(db)
+        return [DogInternalResponse.model_validate(dog) for dog in dogs]
+    except DomainError as e:
+        raise HTTPException(status_code=400, detail=e.issue.value)
 
 
 @router.post(
@@ -24,9 +30,16 @@ def list_dogs_route() -> list[DogInternalResponse]:
     summary="Create a dog",
     description="Create a new dog entry in the system.",
 )
-def create_dog_route(payload: DogCreateRequest) -> DogInternalResponse:
-    dog = create_dog(payload)
-    return DogInternalResponse.model_validate(dog)
+def create_dog_route(
+    payload: DogCreateRequest,
+    db: Session = Depends(get_db)
+) -> DogInternalResponse:
+    try:
+        dog = create_dog(payload, db)
+        return DogInternalResponse.model_validate(dog)
+    except DomainError as e:
+        raise HTTPException(status_code=400, detail=e.issue.value)
+
 
 @router.get(
     "/{dog_id}",
@@ -34,8 +47,14 @@ def create_dog_route(payload: DogCreateRequest) -> DogInternalResponse:
     summary="Get dog",
     description="Retrieve a dog by ID.",
 )
-def get_dog_route(payload: DogRequest) -> DogInternalResponse:
-    dog = get_dog(payload)
-    return DogInternalResponse.model_validate(dog)
+def get_dog_route(dog_id: str, db: Session = Depends(get_db)) -> DogInternalResponse:
+    try:
+        payload = DogRequest(dog_id=dog_id)
+        dog = get_dog(payload, db)
+        return DogInternalResponse.model_validate(dog)
+    except DomainError as e:
+        raise HTTPException(status_code=400, detail=e.issue.value)
+
+
 
 
