@@ -1,16 +1,34 @@
+from datetime import datetime
 from pydantic import BaseModel
 
-
-class Dog(BaseModel):
-    id: int
-    name: str
-    breed: str
-    age: int
-
-class DogsResponse(BaseModel):
-    dogs: list[Dog]
-
+"""
+    Request Schemass
+"""
 class DogCreateRequest(BaseModel):
     name: str
-    breed: str
-    age: int
+
+class DogRequest(BaseModel):
+    id: int
+
+"""
+    Public Schemas
+"""
+class DogResponse(BaseModel):
+    id: int
+    name: str
+
+    model_config = {"from_attributes": True}
+
+"""
+    Internal Schemas
+"""
+class DogInternalResponse(BaseModel):
+    dog_id: str
+    name: str
+    device_id: str
+    start_lat: float
+    start_lon: float
+    is_active: bool
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
