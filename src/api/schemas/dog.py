@@ -14,7 +14,7 @@ class DogRequest(BaseModel):
     Public Schemas
 """
 class DogResponse(BaseModel):
-    id: int
+    dog_id: str
     name: str
 
     model_config = {"from_attributes": True}
