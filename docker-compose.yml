@@ -29,9 +29,56 @@ services:
       - -c
       - |
         uv run python -m scripts.validate_env &&
-        uv run uvicorn src.api.main:api --host 0.0.0.0 --port 8000 --reload
+        uv run uvicorn src.api.main:api --host 0.0.0.0 --port 8000
     depends_on:
       - db
+
+  simulator:
+    build: .
+    container_name: dogtracker-simulator
+    working_dir: /app
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+      - BACKEND_BASE_URL=http://app:8000
+      - SIM_STATE_PATH=/app/runtime/sim_state.json
+    volumes:
+      - .:/app
+      - /app/.venv
+    command:
+      - sh
+      - -c
+      - |
+        uv run python -m simulator.run_simulator
+    depends_on:
+      - app
+
+  frontend:
+    build: .
+    container_name: dogtracker-frontend
+    working_dir: /app
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+      - BACKEND_BASE_URL=http://app:8000
+      - SIM_STATE_PATH=/app/runtime/sim_state.json
+    volumes:
+      - .:/app
+      - /app/.venv
+    ports:
+      - "8501:8501"
+    command:
+      - sh
+      - -c
+      - |
+        uv run streamlit run frontend/app.py --server.address 0.0.0.0 --server.port 8501
+    depends_on:
+      - app
+      - simulator
 
   lint:
     build: .
