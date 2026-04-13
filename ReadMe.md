@@ -4,10 +4,16 @@ Install dependencies
 ```bash
 uv pip install .
 ```
-
+### Backend with db (src)
 Run the app
 ```bash
 docker compose up app
+```
+
+### Simulator
+Run the app
+```bash
+docker compose up simulator app db
 ```
 
 # Linting
@@ -22,6 +28,11 @@ docker compose run --rm lint
 Run all tests
 ```bash
 docker compose run --rm test
+```
+
+Run one test suit by keyword
+```bash
+docker compose run --rm test uv run pytest -k test_dog_stays_within_boundary_over_long_simulation
 ```
 
 # Swagger
