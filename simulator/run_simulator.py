@@ -4,6 +4,7 @@ import time
 from simulator.collar_client import build_telemetry_payload, create_dog, send_telemetry
 from simulator.movement import update_dog_movement
 from simulator.state import create_initial_dog_state
+from simulator.state_write import write_sim_state
 from simulator.zones import get_signal_quality
 
 BASE_URL = os.getenv("BACKEND_BASE_URL", "http://localhost:8000")
@@ -25,6 +26,7 @@ def main() -> None:
     while True:
         dog = update_dog_movement(dog, tick_seconds=1.0)
         signal = get_signal_quality(dog.latitude, dog.longitude)
+        write_sim_state(dog, signal)
         payload = build_telemetry_payload(dog, signal)
         try:
             send_telemetry(payload, BASE_URL)
