@@ -3,6 +3,7 @@ import time
 
 from simulator.collar_client import build_telemetry_payload, create_dog, send_telemetry
 from simulator.movement import update_dog_movement
+from simulator.physiology import update_cumulative_steps, update_heart_rate
 from simulator.state import create_initial_dog_state
 from simulator.state_write import write_sim_state
 from simulator.zones import get_signal_quality
@@ -23,16 +24,29 @@ def main() -> None:
     )
     dog.dog_id = dog_id
 
+    telemetry_simulation_step_counter = 0
+    comulative_steps_counter = 0
+
     while True:
         dog = update_dog_movement(dog, tick_seconds=1.0)
         signal = get_signal_quality(dog.latitude, dog.longitude)
-        write_sim_state(dog, signal)
-        payload = build_telemetry_payload(dog, signal)
-        try:
-            send_telemetry(payload, BASE_URL)
-        except Exception as e:
-            print(f"failed to send telemetry: {e}")
+        update_heart_rate(dog)
+        update_cumulative_steps(dog, comulative_steps_counter)
 
+        telemetry_simulation_step_counter += 1
+        comulative_steps_counter +=1
+        event_type = None
+        # Only send every x steps for realism
+        if telemetry_simulation_step_counter % 10 == 0:
+            payload = build_telemetry_payload(dog, signal)
+            event_type = "valid"
+            try:
+                send_telemetry(payload, BASE_URL)
+            except Exception as e:
+                print(f"failed to send telemetry: {e}")
+            print("SENT TELEMETRY")
+
+        write_sim_state(dog, signal, event_type)
         print(
             f"lat={dog.latitude:.6f} "
             f"lon={dog.longitude:.6f} "
@@ -40,8 +54,7 @@ def main() -> None:
             f"moving={dog.is_moving}"
         )
 
-        time.sleep(1)
-
+        time.sleep(0.3)
 
 if __name__ == "__main__":
     main()
