@@ -1,25 +1,54 @@
 import json
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 
 DEFAULT_PATH = Path(__file__).resolve().parent / "runtime" / "sim_state.json"
 SIM_STATE_PATH = Path(os.getenv("SIM_STATE_PATH", DEFAULT_PATH))
+SIM_STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-def write_sim_state(dog, signal_strength: int) -> None:
-    SIM_STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+def _load_existing_state() -> dict:
+    if not SIM_STATE_PATH.exists():
+        return {}
+    try:
+        return json.loads(SIM_STATE_PATH.read_text())
+    except Exception:
+        return {}
+
+
+def write_sim_state(dog, signal_strength: int, last_event: str | None = None) -> None:
+    now_iso = datetime.now(timezone.utc).isoformat()
+    existing = _load_existing_state()
+
+    prev_event_seq = int(existing.get("event_seq", 0) or 0)
+    prev_last_event = existing.get("last_event")
+    prev_last_event_ts = existing.get("last_event_ts")
+
+    # Persist the most recent event metadata until a newer event arrives.
+    next_last_event = prev_last_event
+    next_last_event_ts = prev_last_event_ts
+    next_event_seq = prev_event_seq
+
+    if last_event is not None:
+        next_last_event = last_event
+        next_last_event_ts = now_iso
+        next_event_seq = prev_event_seq + 1
 
     payload = {
         "dog_id": dog.dog_id,
         "latitude": dog.latitude,
         "longitude": dog.longitude,
         "heading_deg": dog.heading_deg,
-        "speed_mps": dog.speed_mps,
         "is_moving": dog.is_moving,
         "event_ts": dog.last_update_ts.isoformat(),
         "cumulative_steps": dog.cumulative_steps,
         "heart_rate": dog.heart_rate,
         "battery": dog.battery,
         "signal_strength": signal_strength,
+        "last_event": next_last_event,
+        "last_event_ts": next_last_event_ts,
+        "event_seq": next_event_seq,
     }
 
     SIM_STATE_PATH.write_text(json.dumps(payload, indent=2))
