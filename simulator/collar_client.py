@@ -42,3 +42,4 @@ def send_telemetry(payload: dict, base_url: str) -> None:
     response.raise_for_status()
 
     print(f"sent telemetry: status={response.status_code}")
+    return response.json()

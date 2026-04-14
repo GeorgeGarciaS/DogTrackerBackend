@@ -1,4 +1,7 @@
+from sqlalchemy.orm import Session
+
 from src.api.schemas.telemetry import TelemetryIngestRequest
+from src.db.repositories.telemetry_repo import get_duplicate_telemetry_event
 from src.enums import TelemetryIssueType
 from src.validation.helpers import validate_latitude, validate_longitude
 
@@ -20,3 +23,21 @@ def validate_telemetry_ingest(payload: TelemetryIngestRequest) -> list[str]:
     if payload.cumulative_steps < 0:
         errors.append(TelemetryIssueType.CUMULATIVE_STEPS_OUT_OF_RANGE.value)
     return errors
+
+def validate_is_duplicate(
+    payload: TelemetryIngestRequest,
+    db: Session,
+) -> bool:
+    existing_event = get_duplicate_telemetry_event(
+        payload.dog_id,
+        payload.event_ts,
+        payload.latitude,
+        payload.longitude,
+        payload.cumulative_steps,
+        payload.heart_rate,
+        payload.battery,
+        payload.signal_strength,
+        db,
+    )
+    print("$$", existing_event)
+    return existing_event is not None

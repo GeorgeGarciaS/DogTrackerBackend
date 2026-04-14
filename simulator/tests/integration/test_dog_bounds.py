@@ -30,7 +30,7 @@ def is_inside_boundary(latitude: float, longitude: float) -> bool:
 def test_dog_stays_within_boundary_over_long_simulation():
     dog = make_test_dog()
 
-    ticks = 5000
+    ticks = 20000
 
     for _ in range(0, ticks):
         dog = update_dog_movement(

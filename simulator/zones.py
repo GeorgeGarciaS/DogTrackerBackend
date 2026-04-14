@@ -16,12 +16,11 @@ class Zone:
 
 # get bad zone, one quarter of the space
 MID_LAT = (BOUNDARY["min_lat"] + BOUNDARY["max_lat"]) / 2
-MID_LON = (BOUNDARY["min_lon"] + BOUNDARY["max_lon"]) / 2
 BAD_ZONE = Zone(
     name="bad_zone",
     min_lat=MID_LAT,
     max_lat=BOUNDARY["max_lat"],
-    min_lon=MID_LON,
+    min_lon=BOUNDARY["min_lon"],
     max_lon=BOUNDARY["max_lon"],
     min_signal=5,
     max_signal=40,
@@ -37,11 +36,33 @@ GOOD_ZONE = Zone(
     max_signal=100,
 )
 
-def get_signal_quality(latitude: float, longitude: float) -> int:
+def get_signal_quality(
+    latitude: float,
+    longitude: float,
+    prev_signal: int | None = None,
+) -> int:
     if is_inside_zone(latitude, longitude, BAD_ZONE):
-        return random.randint(BAD_ZONE.min_signal, BAD_ZONE.max_signal)
+        min_signal = BAD_ZONE.min_signal
+        max_signal = BAD_ZONE.max_signal
+        step = 3   # small changes in bad zone
+    else:
+        min_signal = GOOD_ZONE.min_signal
+        max_signal = GOOD_ZONE.max_signal
+        step = 5   # slightly bigger changes in good zone
+        prev_signal = None
 
-    return random.randint(GOOD_ZONE.min_signal, GOOD_ZONE.max_signal)
+    # First value
+    if prev_signal is None:
+        return random.randint(min_signal, max_signal)
+
+    # Smooth transition
+    delta = random.randint(-step, step)
+    new_signal = prev_signal + delta
+
+    # Clamp to zone bounds
+    new_signal = max(min_signal, min(max_signal, new_signal))
+
+    return new_signal
 
 """
     implementation helpers
