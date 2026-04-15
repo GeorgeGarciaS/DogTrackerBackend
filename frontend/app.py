@@ -16,6 +16,7 @@ from frontend.pipeline_indicator import (
     render_pipeline_indicator,
     trigger_pipeline_animation,
 )
+from frontend.signal_zone_map import signal_zone_map_fragment
 
 DEFAULT_STATE_PATH = Path(__file__).resolve().parent / "runtime" / "sim_state.json"
 SIM_STATE_PATH = Path(os.getenv("SIM_STATE_PATH", DEFAULT_STATE_PATH))
@@ -669,9 +670,13 @@ def dashboard() -> None:
         else:
             st.info("Waiting for trusted app state...")
 
-    st.markdown("---")
-    st.markdown("**API Pipeline**")
-    render_pipeline_indicator()
+    pipeline_col, map_col = st.columns([3.2, 0.5])
+
+    with pipeline_col:
+        render_pipeline_indicator()
+
+    with map_col:
+        signal_zone_map_fragment(height=200)
 
 
 dashboard()
