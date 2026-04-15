@@ -14,9 +14,7 @@ def get_dog_current_status_by_id(
 
 def upsert_current_status(clean_telemetry_record: TelemetryCleanModel, db: Session):
     # find if there is a DogCurrentStatus with the dog_id of clean_telemetry_record
-    status = db.query(DogCurrentStatusModel).filter(
-        DogCurrentStatusModel.dog_id == clean_telemetry_record.dog_id
-    ).first()
+    status = get_dog_current_status_by_id(clean_telemetry_record.dog_id, db)
 
     if status is None:
         # instert

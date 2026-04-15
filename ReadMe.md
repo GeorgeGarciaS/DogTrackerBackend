@@ -16,6 +16,12 @@ Run the app
 docker compose up simulator app db
 ```
 
+### Simulator
+Run the app
+```bash
+docker compose up frontend simulator app db
+```
+
 # Linting
 
 Run linting

@@ -1,4 +1,3 @@
-from datetime import datetime, timezone
 import json
 import os
 from datetime import datetime, timezone
@@ -18,23 +17,31 @@ def _load_existing_state() -> dict:
         return {}
 
 
-def write_sim_state(dog, signal_strength: int, last_event: str | None = None) -> None:
+def write_sim_state(
+    dog,
+    signal_strength: int,
+    telemetry_response: dict | None,
+    last_event: str | None = None
+) -> None:
     now_iso = datetime.now(timezone.utc).isoformat()
     existing = _load_existing_state()
 
     prev_event_seq = int(existing.get("event_seq", 0) or 0)
     prev_last_event = existing.get("last_event")
     prev_last_event_ts = existing.get("last_event_ts")
+    prev_telemetry_pipeline_info = existing.get("telemetry_pipeline_info")
 
-    # Persist the most recent event metadata until a newer event arrives.
     next_last_event = prev_last_event
     next_last_event_ts = prev_last_event_ts
     next_event_seq = prev_event_seq
+    next_telemetry_pipeline_info = prev_telemetry_pipeline_info
 
     if last_event is not None:
+        assert telemetry_response is not None
         next_last_event = last_event
         next_last_event_ts = now_iso
         next_event_seq = prev_event_seq + 1
+        next_telemetry_pipeline_info = telemetry_response.get("pipeline_information")
 
     payload = {
         "dog_id": dog.dog_id,
@@ -50,6 +57,7 @@ def write_sim_state(dog, signal_strength: int, last_event: str | None = None) ->
         "last_event": next_last_event,
         "last_event_ts": next_last_event_ts,
         "event_seq": next_event_seq,
+        "telemetry_pipeline_info": next_telemetry_pipeline_info,
     }
 
     SIM_STATE_PATH.write_text(json.dumps(payload, indent=2))

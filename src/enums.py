@@ -32,9 +32,18 @@ class TelemetryStatus(str, Enum):
     ACCEPTED = "accepted"
     REJECTED = "rejected"
 
+class TelemetryPipelineStage(str, Enum):
+    API = "api"
+    INVALID_TELEMETRY = "invalid_telemetry"
+    TELEMETRY_RAW_INGEST = "telemetry_raw_ingest"
+    TELEMETRY_REJECTED = "telemetry_rejected"
+    DATA_QUALITY_ISSUES_INGEST = "data_quality_issues_ingest"
+    TELEMETRY_ACCEPTED = "telemetry_accepted"
+    STATUS_UPDATED = "status_updated"
+    
+
 """
     Data Quality Issue Related Enums
 """
 class DataQualityIssueErrorType(str, Enum):
     RECORD_NOT_FOUND = "record_not_found"
-

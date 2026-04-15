@@ -25,7 +25,6 @@ def get_data_quality_issue_route(
     try:
         payload = DataQualityIssueRequest(event_id=event_id)
         data_quality_issues = get_data_quality_issue(payload, db)
-        print("$$33")
         return [
             DataQualityIssueResponse.model_validate(data_quality_issue)
             for data_quality_issue in data_quality_issues

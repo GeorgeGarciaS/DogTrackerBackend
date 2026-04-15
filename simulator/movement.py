@@ -88,22 +88,32 @@ def update_dog_movement(
     return dog
 
 def apply_boundary_behavior(dog: DogState, boundary: dict) -> None:
-    # turn in small increments before edge
-    buffer = 0.0001
+    buffer = 0.00001
 
-    near_north = dog.latitude > boundary["max_lat"] - buffer
-    near_south = dog.latitude < boundary["min_lat"] + buffer
-    near_east = dog.longitude > boundary["max_lon"] - buffer
-    near_west = dog.longitude < boundary["min_lon"] + buffer
+    # Hard clamp so the dog can never remain outside
+    dog.latitude = min(max(dog.latitude, boundary["min_lat"]), boundary["max_lat"])
+    dog.longitude = min(max(dog.longitude, boundary["min_lon"]), boundary["max_lon"])
+
+    near_north = dog.latitude >= boundary["max_lat"] - buffer
+    near_south = dog.latitude <= boundary["min_lat"] + buffer
+    near_east = dog.longitude >= boundary["max_lon"] - buffer
+    near_west = dog.longitude <= boundary["min_lon"] + buffer
 
     if near_north:
-        dog.heading_deg = random.uniform(180, 360)
-
+        # must point southward
+        dog.heading_deg = random.uniform(90, 270)
     elif near_south:
-        dog.heading_deg = random.uniform(0, 180)
+        # must point northward
+        dog.heading_deg = random.choice([
+            random.uniform(0, 90),
+            random.uniform(270, 360),
+        ])
 
     if near_east:
+        # must point westward
         dog.heading_deg = random.uniform(180, 360)
-
     elif near_west:
-        dog.heading_deg = random.uniform(0, 180)  
+        # must point eastward
+        dog.heading_deg = random.uniform(0, 180)
+
+    dog.heading_deg = normalize_heading(dog.heading_deg)
