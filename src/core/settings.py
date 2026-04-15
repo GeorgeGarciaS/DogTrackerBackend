@@ -14,6 +14,11 @@ class Settings(BaseSettings):
     DB_USER: str
     DB_PASSWORD: str
     LOG_LEVEL: str
+    BOUNDARY_MIN_LAT: float
+    BOUNDARY_MAX_LAT: float
+    BOUNDARY_MIN_LON: float
+    BOUNDARY_MAX_LON: float
+    DBT_INTERVAL_SECONDS: int
 
     @property
     def database_url(self) -> str:

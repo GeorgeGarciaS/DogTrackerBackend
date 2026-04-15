@@ -1,4 +1,5 @@
 import math
+import os
 import random
 from datetime import datetime, timezone
 
@@ -8,10 +9,10 @@ EARTH_METERS_PER_DEG_LAT = 111_320.0
 
 # 200m x 200m rectangle based on dog starting coor
 BOUNDARY = {
-    "min_lat": 37.7740,
-    "max_lat": 37.7760,
-    "min_lon": -122.4205,
-    "max_lon": -122.4180,
+    "min_lat": float(os.getenv("BOUNDARY_MIN_LAT", 37.7740)),
+    "max_lat": float(os.getenv("BOUNDARY_MAX_LAT", 37.7760)),
+    "min_lon": float(os.getenv("BOUNDARY_MIN_LON", -122.4205)),
+    "max_lon": float(os.getenv("BOUNDARY_MAX_LON", -122.4180)),
 }
 
 def normalize_heading(heading_deg: float) -> float:

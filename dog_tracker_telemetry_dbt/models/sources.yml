@@ -1,0 +1,95 @@
+version: 2
+
+sources:
+  - name: telemetry
+    schema: public
+    tables:
+      - name: telemetry_raw
+        columns:
+          - name: event_id
+            tests:
+              - not_null
+              - unique
+          - name: dog_id
+            tests:
+              - not_null
+          - name: event_ts
+            tests:
+              - not_null
+          - name: latitude
+            tests:
+              - not_null
+          - name: longitude
+            tests:
+              - not_null
+          - name: cumulative_steps
+            tests:
+              - not_null
+          - name: heart_rate
+            tests:
+              - not_null
+          - name: battery
+            tests:
+              - not_null
+          - name: signal_strength
+            tests:
+              - not_null
+          - name: ingested_at
+            tests:
+              - not_null
+
+      - name: telemetry_clean
+        columns:
+          - name: event_id
+            tests:
+              - not_null
+              - unique
+          - name: dog_id
+            tests:
+              - not_null
+          - name: event_ts
+            tests:
+              - not_null
+          - name: latitude
+            tests:
+              - not_null
+          - name: longitude
+            tests:
+              - not_null
+          - name: cumulative_steps
+            tests:
+              - not_null
+          - name: heart_rate
+            tests:
+              - not_null
+          - name: battery
+            tests:
+              - not_null
+          - name: signal_strength
+            tests:
+              - not_null
+          - name: ingested_at
+            tests:
+              - not_null
+
+      - name: data_quality_issues
+        columns:
+          - name: issue_id
+            tests:
+              - not_null
+              - unique
+          - name: event_id
+            tests:
+              - not_null
+          - name: dog_id
+            tests:
+              - not_null
+          - name: issue_type
+            tests:
+              - not_null
+          - name: issue_reason
+            tests:
+              - not_null
+          - name: created_at
+            tests:
+              - not_null

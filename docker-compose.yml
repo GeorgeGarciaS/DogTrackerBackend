@@ -80,6 +80,26 @@ services:
       - app
       - simulator
 
+  dbt:
+    build: .
+    container_name: dogtracker-dbt
+    working_dir: /app
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - .:/app
+      - /app/.venv
+    command:
+      - sh
+      - -c
+      - |
+        uv run python -m scripts.run_dbt_loop
+    depends_on:
+      - db
+
   lint:
     build: .
     container_name: dogtracker-lint
@@ -110,7 +130,8 @@ services:
       - -c
       - |
         uv run python -m scripts.validate_env &&
-        uv run pytest -s -vv
+        uv run pytest -s -vv &&
+        uv run python -m scripts.run_dbt_tests
 
 volumes:
   postgres_data:

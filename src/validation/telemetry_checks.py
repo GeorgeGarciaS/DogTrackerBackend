@@ -19,7 +19,9 @@ def validate_telemetry_ingest(payload: TelemetryIngestRequest) -> list[str]:
         errors.append(TelemetryIssueType.BATTERY_OUT_OF_RANGE.value)
     if payload.heart_rate <= 0:
         errors.append(TelemetryIssueType.HEART_RATE_INVALID.value)
-
+    if not (0 <= payload.signal_strength <= 100):
+        errors.append(TelemetryIssueType.SIGNAL_STRENGTH.value)
+    
     if payload.cumulative_steps < 0:
         errors.append(TelemetryIssueType.CUMULATIVE_STEPS_OUT_OF_RANGE.value)
     return errors
@@ -39,5 +41,5 @@ def validate_is_duplicate(
         payload.signal_strength,
         db,
     )
-    print("$$", existing_event)
+
     return existing_event is not None
