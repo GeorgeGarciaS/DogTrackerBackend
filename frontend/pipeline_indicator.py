@@ -197,22 +197,30 @@ def render_pipeline_indicator() -> None:
           <div class="arrow" style="grid-column:2; grid-row:1;">→</div>
 
           <div style="grid-column:3; grid-row:1;">
-            {_label_html("Raw Ingest", _node_color("telemetry_raw_ingest", lit_keys, branch))}
+            {_label_html("Raw Ingest", _node_color(
+                "telemetry_raw_ingest", lit_keys, branch
+            ))}
           </div>
           <div class="arrow" style="grid-column:4; grid-row:1;">→</div>
 
           <div style="grid-column:5; grid-row:1;">
-            {_label_html("Accepted", _node_color("telemetry_accepted", lit_keys, branch))}
+            {_label_html(
+                "Accepted", _node_color("telemetry_accepted", lit_keys, branch)
+            )}
           </div>
           <div class="arrow" style="grid-column:6; grid-row:1;">→</div>
 
           <div style="grid-column:7; grid-row:1;">
-            {_label_html("Status Updated", _node_color("status_updated", lit_keys, branch))}
+            {_label_html("Status Updated", _node_color(
+                "status_updated", lit_keys, branch
+            ))}
           </div>
 
           <div class="branch" style="grid-column:1; grid-row:2;">↘</div>
           <div style="grid-column:1; grid-row:2;">
-            {_label_html("Invalid Telemetry", _node_color("invalid_telemetry", lit_keys, branch))}
+            {_label_html("Invalid Telemetry", _node_color(
+                "invalid_telemetry", lit_keys, branch
+            ))}
           </div>
 
           <div
@@ -222,12 +230,16 @@ def render_pipeline_indicator() -> None:
             ↘
           </div>
           <div style="grid-column:5; grid-row:2;">
-            {_label_html("Rejected", _node_color("telemetry_rejected", lit_keys, branch))}
+            {_label_html("Rejected", _node_color(
+                "telemetry_rejected", lit_keys, branch
+            ))}
           </div>
           <div class="arrow" style="grid-column:6; grid-row:2;">→</div>
 
           <div style="grid-column:7; grid-row:2;">
-            {_label_html("DQ Issues", _node_color("data_quality_issues_ingest", lit_keys, branch))}
+            {_label_html("DQ Issues", _node_color(
+                "data_quality_issues_ingest", lit_keys, branch
+            ))}
           </div>
         </div>
       </div>

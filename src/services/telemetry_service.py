@@ -1,6 +1,5 @@
 from sqlalchemy.orm import Session
 
-from src.helpers import normalize_ts
 from src.api.exceptions import DomainError
 from src.api.schemas.telemetry import (
     TelemetryIngestRequest,
@@ -25,6 +24,7 @@ from src.enums import (
     TelemetryPipelineStage,
     TelemetryStatus,
 )
+from src.helpers import normalize_ts
 from src.validation.telemetry_checks import (
     validate_is_duplicate,
     validate_telemetry_ingest,
@@ -100,7 +100,9 @@ def ingest_telemetry(
     dog_current_status = get_dog_current_status_by_id(clean_telemetry_record.dog_id, db)
     if (
         dog_current_status is not None and
-        normalize_ts(clean_telemetry_record.event_ts) >= normalize_ts(dog_current_status.last_event_ts)
+        normalize_ts(
+            clean_telemetry_record.event_ts
+        ) >= normalize_ts(dog_current_status.last_event_ts)
     ) or dog_current_status is None: 
         upsert_current_status(clean_telemetry_record, db)
         pipeline[TelemetryPipelineStage.STATUS_UPDATED] = True

@@ -158,17 +158,20 @@ st.markdown(
 )
 
 
-def render_header(dog_name: str = "Dog Tracker Simulator For Mr. Waffles, my dog") -> None:
+def render_header(
+    dog_name: str = "Dog Tracker Simulator For Mr. Waffles, my dog"
+) -> None:
     st.markdown(
         f"""
-        <div style="margin-top:5px; margin-bottom:18px;">
-            <div class="hero-card">
-                <div class="hero-name">{dog_name}</div>
-                <div class="hero-sub">
-                    Prototype telemetry monitor for trusted dog position and event decisions.
+            <div style="margin-top:5px; margin-bottom:18px;">
+                <div class="hero-card">
+                    <div class="hero-name">{dog_name}</div>
+                    <div class="hero-sub">
+                        {"Prototype telemetry monitor for trusted dog position "
+                        "and event decisions."}
+                    </div>
                 </div>
             </div>
-        </div>
         """,
         unsafe_allow_html=True,
     )
@@ -178,12 +181,30 @@ def render_compact_legend() -> None:
     st.markdown(
         """
         <div class="legend-panel">
-            <div class="legend-row"><span class="legend-dot" style="color:#0078FF;">●</span><span>Real dog position</span></div>
-            <div class="legend-row"><span class="legend-dot" style="color:#00B450;">●</span><span>Trusted app position</span></div>
-            <div class="legend-row"><span class="legend-square" style="color:#FF4D4D;">■</span><span>Degraded signal area</span></div>
-            <div class="legend-row"><span class="legend-dot" style="color:#00FF88;">●</span><span>Event accepted</span></div>
-            <div class="legend-row"><span class="legend-dot" style="color:#FF3B3B;">●</span><span>Event rejected</span></div>
-            <div class="legend-row"><span class="legend-dot" style="color:#FFA500;">●</span><span>Degraded but accepted</span></div>
+            <div class="legend-row">
+                <span class="legend-dot" style="color:#0078FF;">●</span>
+                <span>Real dog position</span>
+            </div>
+            <div class="legend-row">
+                <span class="legend-dot" style="color:#00B450;">●</span>
+                <span>Trusted app position</span>
+            </div>
+            <div class="legend-row">
+                <span class="legend-square" style="color:#FF4D4D;">■</span>
+                <span>Degraded signal area</span>
+            </div>
+            <div class="legend-row">
+                <span class="legend-dot" style="color:#00FF88;">●</span>
+                <span>Event accepted</span>
+            </div>
+            <div class="legend-row">
+                <span class="legend-dot" style="color:#FF3B3B;">●</span>
+                <span>Event rejected</span>
+            </div>
+            <div class="legend-row">
+                <span class="legend-dot" style="color:#FFA500;">●</span>
+                <span>Degraded but accepted</span>
+            </div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -434,7 +455,10 @@ def build_why_text(
 
     if event_type == "noisy":
         if zone == "bad":
-            return "Dog entered the bad signal zone. Telemetry was noisy but still valid."
+            return (
+                "Dog entered the bad signal zone. "
+                "Telemetry was noisy but still valid."
+            )
         return "Telemetry was noisy, but the event still passed trust checks."
 
     if event_type == "invalid":
@@ -480,7 +504,9 @@ if "pending_backend_state" not in st.session_state:
 @st.fragment(run_every=REFRESH_SECONDS)
 def dashboard() -> None:
     sim_state = load_sim_state()
-    latest_backend_state = load_backend_state(sim_state.get("dog_id") if sim_state else None)
+    latest_backend_state = load_backend_state(
+        sim_state.get("dog_id") if sim_state else None
+    )
 
     current_event_seq = 0
     current_last_event = None
@@ -505,8 +531,10 @@ def dashboard() -> None:
         )
 
     if not pipeline_animation_in_progress():
-        if st.session_state.pending_backend_state is not None:
-            st.session_state.displayed_backend_state = st.session_state.pending_backend_state
+        pending = st.session_state.pending_backend_state
+
+        if pending is not None:
+            st.session_state.displayed_backend_state = pending
             st.session_state.pending_backend_state = None
         elif (
             st.session_state.displayed_backend_state is None
@@ -539,7 +567,9 @@ def dashboard() -> None:
             st.write(f"Battery: {sim_state.get('battery', '-')}")
             st.write(f"Heart rate: {sim_state.get('heart_rate', '-')}")
             st.write(f"Steps: {sim_state.get('cumulative_steps', '-')}")
-            st.write(f"Last tracker event: {st.session_state.dashboard_last_event or '-'}")
+            st.write(f"""Last tracker event: {
+                st.session_state.dashboard_last_event or '-'
+            }""")
             st.write(
                 f"Last tracker event ts: "
                 f"{format_ts_to_seconds(st.session_state.dashboard_last_event_ts)}"
@@ -557,7 +587,8 @@ def dashboard() -> None:
                 <div style="margin-bottom:10px;">
                     <div class="section-title">Telemetry Pipeline</div>
                     <div class="section-subtitle">
-                        Real tracker position vs trusted app position after decision filtering
+                        Real tracker position vs trusted app position
+                        after decision filtering
                     </div>
                 </div>
                 """,
@@ -596,11 +627,15 @@ def dashboard() -> None:
                     ),
                     use_container_width=True,
                     height=320,
-                    key=(
+                    key = (
                         f"app_map_{app_point['latitude']}_{app_point['longitude']}_"
                         f"{current_event_seq}_{backend_state.get('updated_at', 'na')}_"
-                        f"{'pipeline_busy' if pipeline_animation_in_progress() else 'pipeline_done'}"
-                    ),
+                        f"""{(
+                            'pipeline_busy'
+                            if pipeline_animation_in_progress()
+                            else 'pipeline_done'
+                        )}"""
+                    )
                 )
             else:
                 st.info("Waiting for backend status...")
