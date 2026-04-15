@@ -130,7 +130,8 @@ services:
       - -c
       - |
         uv run python -m scripts.validate_env &&
-        uv run pytest -s -vv
+        uv run pytest -s -vv &&
+        uv run python -m scripts.run_dbt_tests
 
 volumes:
   postgres_data:
