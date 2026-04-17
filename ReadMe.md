@@ -41,19 +41,19 @@ uv pip install .
 ### Backend with db (src)
 Run the app
 ```bash
-docker compose up app db
+docker compose up app
 ```
 
 ### Simulator
 Run the app
 ```bash
-docker compose up simulator app db
+docker compose up simulator
 ```
 
 ### Frontend
 Run the app
 ```bash
-docker compose up frontend simulator app db dbt
+docker compose up frontend
 ```
 
 # Linting
@@ -72,7 +72,7 @@ docker compose run --rm test
 
 Run one test suit by keyword
 ```bash
-docker compose run --rm test uv run pytest -k test_dog_stays_within_boundary_over_long_simulation
+docker compose run --rm test uv run pytest -k < test_suite >
 ```
 
 # Swagger
