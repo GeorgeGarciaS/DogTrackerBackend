@@ -54,6 +54,7 @@ services:
         uv run python -m simulator.run_simulator
     depends_on:
       - app
+      - db
 
   frontend:
     build: .
@@ -79,6 +80,8 @@ services:
     depends_on:
       - app
       - simulator
+      - db
+      - dbt
 
   dbt:
     build: .
@@ -92,6 +95,8 @@ services:
     volumes:
       - .:/app
       - /app/.venv
+    ports:
+      - "8080:8080"
     command:
       - sh
       - -c
