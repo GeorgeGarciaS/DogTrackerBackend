@@ -55,10 +55,8 @@ def ingest_telemetry(
         signal_strength=payload.signal_strength,
     )
 
-    duplicate_error = validate_is_duplicate(payload, db)
+
     errors = validate_telemetry_ingest(payload)
-    if duplicate_error:
-        errors.append(TelemetryIssueType.DUPLICATE_EVENT)
     
     insert_raw_telemetry(raw_telemetry_record, db)
     pipeline[TelemetryPipelineStage.TELEMETRY_RAW_INGEST] = True
